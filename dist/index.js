@@ -60631,7 +60631,9 @@ function fixSdkDeltaFormattingBug(value) {
     // Instead of returning "foo", we get {0: 'f', 1: 'o', 2: 'o' }. This function works around this bug, by
     // trying to detect this heuristically, and convert back into the correct string format.
     // See https://github.com/Azure/bicep-deploy/issues/71 for more info.
-    if (typeof value !== "object") {
+    if (value === null ||
+        typeof value !== "object" ||
+        Object.keys(value).length === 0) {
         return value;
     }
     let fixedString = "";
@@ -60656,8 +60658,6 @@ function formatPropertyModify(builder, before, after, children, indentLevel) {
         formatPropertyChanges(builder, sortChanges(children), indentLevel);
     }
     else {
-        before = fixSdkDeltaFormattingBug(before);
-        after = fixSdkDeltaFormattingBug(after);
         formatPropertyDelete(builder, before, indentLevel);
         // Space before =>
         if (isNonEmptyObject(before)) {
@@ -60734,6 +60734,7 @@ function shouldConsiderPropertyChangePath(propertyChange) {
     return !propertyChange.children;
 }
 function formatJsonValue(builder, value, path = "", maxPathLength = 0, indentLevel = 0) {
+    value = fixSdkDeltaFormattingBug(value);
     if (isLeaf(value)) {
         formatJsonPath(builder, path, maxPathLength - path.length + 1, indentLevel);
         formatLeaf(builder, value);

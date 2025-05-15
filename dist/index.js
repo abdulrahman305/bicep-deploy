@@ -45117,6 +45117,11 @@ function parseConfig() {
                         "unsupported",
                     ]),
                 },
+                validationLevel: (0, input_1.getOptionalEnumInput)("validation-level", [
+                    "provider",
+                    "template",
+                    "providerNoRbac",
+                ]),
             };
         }
         case "deploymentStack": {
@@ -45469,6 +45474,7 @@ function getDeployment(config, files) {
             expressionEvaluationOptions: {
                 scope: "inner",
             },
+            validationLevel: config.validationLevel,
         },
         tags: config.tags,
     };
